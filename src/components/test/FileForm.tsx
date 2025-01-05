@@ -1,7 +1,5 @@
 import { Button } from '@/components/ui/button';
-import FileUploadWithLabel, {
-  FileData,
-} from '@/components/ui/FileUploadWithLabel';
+import FileUploadWithLabel from '@/components/ui/FileUploadWithLabel';
 import {
   Form,
   FormControl,
@@ -16,22 +14,9 @@ import * as z from 'zod';
 
 // Define form schema
 const formSchema = z.object({
-  files: z
-    .array(
-      z.object({
-        name: z.string(),
-        size: z.number().max(1024 * 1024 * 4, 'File size exceeds 4MB limit'),
-        type: z.enum([
-          'image/svg+xml',
-          'image/png',
-          'image/jpeg',
-          'image/gif',
-          'application/pdf',
-        ]),
-        content: z.string(),
-      })
-    )
-    .min(1, 'At least one file is required'),
+  files: z.any().refine((files) => files.length > 0, {
+    message: 'At least one file is required',
+  }),
 });
 
 export default function FileTestForm() {
@@ -41,16 +26,6 @@ export default function FileTestForm() {
       files: [],
     },
   });
-
-  const handleFilesChange = (files: FileData[]) => {
-    const file = files as unknown as z.infer<typeof formSchema>['files'];
-
-    // Update the value in the form
-    form.setValue('files', file);
-
-    // Trigger validation for the 'files' field
-    form.trigger('files');
-  };
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -71,12 +46,16 @@ export default function FileTestForm() {
         <FormField
           control={form.control}
           name='files'
-          render={() => (
+          render={({ field }) => (
             <FormItem>
               <FormControl>
                 <FileUploadWithLabel
+                  boxLabel='Upload files'
                   label='Upload files'
-                  onFilesChange={handleFilesChange}
+                  value={field.value}
+                  onFilesChange={(files) => field.onChange(files[0])}
+                  disabled={false}
+                  maxFiles={1}
                 />
               </FormControl>
               <FormMessage />

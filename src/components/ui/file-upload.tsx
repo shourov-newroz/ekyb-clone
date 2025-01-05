@@ -159,60 +159,60 @@ export const FileUploader = forwardRef<
       async (acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
         console.log('acceptedFiles', acceptedFiles);
         console.log('rejectedFiles', rejectedFiles);
-        // try {
-        //   // Early validation of rejected files
-        //   if (rejectedFiles.length > 0) {
-        //     const rejection = rejectedFiles[0]; // Only show first rejection to avoid overwhelming
-        //     if (rejection.errors[0]) {
-        //       toast.error(
-        //         `${rejection.file.name}: ${rejection.errors[0].message}`
-        //       );
-        //     }
-        //     return;
-        //   }
+        try {
+          // Early validation of rejected files
+          if (rejectedFiles.length > 0) {
+            const rejection = rejectedFiles[0]; // Only show first rejection to avoid overwhelming
+            if (rejection.errors[0]) {
+              toast.error(
+                `${rejection.file.name}: ${rejection.errors[0].message}`
+              );
+            }
+            return;
+          }
 
-        //   // Basic validation
-        //   if (!acceptedFiles?.length) return;
+          // Basic validation
+          if (!acceptedFiles?.length) return;
 
-        //   // Process files sequentially to prevent memory issues
-        //   const newValues: File[] = [];
-        //   const existingNames = new Set(value?.map((f) => f.name) || []);
+          // Process files sequentially to prevent memory issues
+          const newValues: File[] = [];
+          const existingNames = new Set(value?.map((f) => f.name) || []);
 
-        //   for (const file of acceptedFiles) {
-        //     // Check file limit
-        //     if (newValues.length >= maxFiles) {
-        //       toast.error(`Maximum ${maxFiles} files allowed`);
-        //       break;
-        //     }
+          for (const file of acceptedFiles) {
+            // Check file limit
+            if (newValues.length >= maxFiles) {
+              toast.error(`Maximum ${maxFiles} files allowed`);
+              break;
+            }
 
-        //     // Check duplicates
-        //     if (existingNames.has(file.name)) {
-        //       toast.error(`File "${file.name}" already exists`);
-        //       continue;
-        //     }
+            // Check duplicates
+            if (existingNames.has(file.name)) {
+              toast.error(`File "${file.name}" already exists`);
+              continue;
+            }
 
-        //     // Size validation
-        //     if (file.size > maxSize) {
-        //       toast.error(
-        //         `File "${file.name}" exceeds ${maxSize / (1024 * 1024)}MB limit`
-        //       );
-        //       continue;
-        //     }
+            // Size validation
+            if (file.size > maxSize) {
+              toast.error(
+                `File "${file.name}" exceeds ${maxSize / (1024 * 1024)}MB limit`
+              );
+              continue;
+            }
 
-        //     // Add file to new values
-        //     newValues.push(file);
-        //     existingNames.add(file.name);
-        //   }
+            // Add file to new values
+            newValues.push(file);
+            existingNames.add(file.name);
+          }
 
-        //   // Only update if we have valid files
-        //   if (newValues.length > 0) {
-        //     onValueChange(newValues);
-        //   }
-        // } catch (error) {
-        //   console.error('Drop error:', error);
-        //   toast.error('Failed to process files');
-        //   setIsFileTooBig(false);
-        // }
+          // Only update if we have valid files
+          if (newValues.length > 0) {
+            onValueChange(newValues);
+          }
+        } catch (error) {
+          console.error('Drop error:', error);
+          toast.error('Failed to process files');
+          setIsFileTooBig(false);
+        }
       },
       [value, maxFiles, maxSize, onValueChange]
     );
