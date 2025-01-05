@@ -14,8 +14,8 @@ import * as z from 'zod';
 
 // Define form schema
 const formSchema = z.object({
-  files: z.any().refine((files) => files.length > 0, {
-    message: 'At least one file is required',
+  files: z.any().refine((file) => file && file.size <= 1024 * 1024 * 4, {
+    message: 'File is required and must not exceed 4MB.',
   }),
 });
 
@@ -23,7 +23,7 @@ export default function FileTestForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      files: [],
+      files: null,
     },
   });
 
@@ -41,7 +41,7 @@ export default function FileTestForm() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className='mx-auto max-w-3xl space-y-8 py-10'
+        className='max-w-3xl py-10 mx-auto space-y-8'
       >
         <FormField
           control={form.control}
