@@ -34,7 +34,7 @@ const formSchema = z.object({
     .min(1, 'At least one file is required'),
 });
 
-export default function MyForm() {
+export default function FileTestForm() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {

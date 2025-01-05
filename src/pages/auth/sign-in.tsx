@@ -1,6 +1,7 @@
 import { sendPostRequest } from '@/api/swrConfig';
 import BACKEND_ENDPOINTS from '@/api/urls';
 import { AuthContent, AuthForm, AuthFormSection } from '@/components/auth';
+import FileTestForm from '@/components/test/FileForm';
 import InputWithLabel from '@/components/ui/InputWithLabel';
 import useAuth from '@/hooks/useAuth';
 import AuthLayout from '@/layouts/AuthLayout';
@@ -148,6 +149,7 @@ const SignIn: React.FC = () => {
           </AuthFormSection>
         </AuthForm>
       </main>
+      <FileTestForm />
     </AuthLayout>
   );
 };
